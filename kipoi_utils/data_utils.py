@@ -3,10 +3,10 @@
 import numpy as np
 import sys
 import collections
-from kipoiutils.utils import map_nested
+from kipoi_utils.utils import map_nested
 import pandas as pd
 import six
-from kipoiutils.external.flatten_json import flatten
+from kipoi_utils.external.flatten_json import flatten
 # string_classes
 if sys.version_info[0] == 2:
     string_classes = basestring

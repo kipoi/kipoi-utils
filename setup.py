@@ -22,15 +22,15 @@ test_requirements = [
     "pytest-cov",
     "coveralls",  
 ]
-
+desc = "kipoi-utils: utils used in various packages related to kipoi"
 setup(
     name='kipoi_utils',
     version='0.1.0',
-    description="kipoiutils: utils used in various packages related to kipoi",
+    description=desc,
     author="Kipoi team",
     author_email='thorsten.beier@embl.de',
-    url='https://github.com/kipoi/kipoiutils',
-    long_description="kipoiutils: sequence-based data-laoders for Kipoi",
+    url='https://github.com/kipoi/kipoi-utils',
+    long_description=desc,
     packages=find_packages(),
     install_requires=requirements,
     extras_require={
