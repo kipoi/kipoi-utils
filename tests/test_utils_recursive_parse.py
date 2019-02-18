@@ -1,5 +1,4 @@
-# from kipoiutils.specs import RemoteFile
-from kipoiutils.utils import recursive_dict_parse
+from kipoi_utils.utils import recursive_dict_parse
 import pytest
 
 

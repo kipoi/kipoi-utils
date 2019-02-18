@@ -1,21 +1,21 @@
 """Test load module
 """
-import kipoiutils
-from kipoiutils.utils import load_obj, inherits_from, override_default_kwargs, infer_parent_class, cd, default_kwargs
-# %from kipoiutils.data import BaseDataLoader, Dataset, AVAILABLE_DATALOADERS
+import kipoi_utils
+from kipoi_utils.utils import load_obj, inherits_from, override_default_kwargs, infer_parent_class, cd, default_kwargs
+# %from kipoi_utils.data import BaseDataLoader, Dataset, AVAILABLE_DATALOADERS
 import pytest
 
 from collections import OrderedDict
 
 
 def test_import_module_fn():
-    fn = load_obj("kipoiutils.utils.read_pickle")
-    assert fn == kipoiutils.utils.read_pickle
+    fn = load_obj("kipoi_utils.utils.read_pickle")
+    assert fn == kipoi_utils.utils.read_pickle
 
 
 def test_import_module_cls():
-    cls = load_obj("kipoiutils.utils.Slice_conv")
-    assert cls == kipoiutils.utils.Slice_conv
+    cls = load_obj("kipoi_utils.utils.Slice_conv")
+    assert cls == kipoi_utils.utils.Slice_conv
 
 
 def test_inherits_from():
@@ -125,7 +125,7 @@ def test_load_obj():
         load_obj("keras.dsa")
 
 
-@pytest.mark.skip(reason="is a kipoi test, not kipoiutils test")
+@pytest.mark.skip(reason="is a kipoi test, not kipoi_utils test")
 def test_sequential_model_loading():
     m2 = kipoi.get_model("example/models/extended_coda", source='dir')
     m1 = kipoi.get_model("example/models/kipoi_dataloader_decorator", source='dir')

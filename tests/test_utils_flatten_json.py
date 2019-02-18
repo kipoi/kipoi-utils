@@ -2,9 +2,9 @@
 """
 import numpy as np
 from collections import OrderedDict
-import kipoiutils
-from kipoiutils.utils import take_first_nested, map_nested
-from kipoiutils.external.flatten_json import flatten, flatten_ordered, unflatten_list
+import kipoi_utils
+from kipoi_utils.utils import take_first_nested, map_nested
+from kipoi_utils.external.flatten_json import flatten, flatten_ordered, unflatten_list
 from pytest import fixture
 
 
@@ -88,5 +88,5 @@ def test_compare_numpy_dict():
             "b": [np.arange(4)]}
     obj3 = {"d": np.arange(3),
             "b": [np.arange(4)]}
-    assert kipoiutils.utils.compare_numpy_dict(obj1, obj2)
-    assert not kipoiutils.utils.compare_numpy_dict(obj1, obj3)
+    assert kipoi_utils.utils.compare_numpy_dict(obj1, obj2)
+    assert not kipoi_utils.utils.compare_numpy_dict(obj1, obj3)

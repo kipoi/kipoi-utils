@@ -1,7 +1,7 @@
 """Test 
 """
 import os
-from kipoiutils.utils import list_files_recursively
+from kipoi_utils.utils import list_files_recursively
 
 
 def test_list_files_recursively():

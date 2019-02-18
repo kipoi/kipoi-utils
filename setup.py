@@ -24,7 +24,7 @@ test_requirements = [
 ]
 
 setup(
-    name='kipoiutils',
+    name='kipoi_utils',
     version='0.1.0',
     description="kipoiutils: utils used in various packages related to kipoi",
     author="Kipoi team",

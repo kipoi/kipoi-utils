@@ -3,7 +3,7 @@
 
 import pytest
 from pytest import fixture
-from kipoiutils.data_utils import get_dataset_lens, get_dataset_item
+from kipoi_utils.data_utils import get_dataset_lens, get_dataset_item
 import numpy as np
 
 
@@ -46,7 +46,7 @@ def test_get_item(data):
     assert get_dataset_item(data, 1) == {"a": [1], "b": {"d": 1}, "c": np.array([1])}
 
 
-@pytest.mark.skip(reason="is a kipoi test, not kipoiutils test")
+@pytest.mark.skip(reason="is a kipoi test, not kipoi_utils test")
 def test_preloaded_dataset(data):
     def data_fn():
         return data
