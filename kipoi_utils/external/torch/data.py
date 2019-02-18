@@ -10,7 +10,7 @@ import sys
 import traceback
 import threading
 # TODO THIS NEEDS TO BE SOMEWHERE ELSE
-from kipoiutils.data_utils import numpy_collate
+from kipoi_utils.data_utils import numpy_collate
 # string_classes
 if sys.version_info[0] == 2:
     string_classes = basestring
