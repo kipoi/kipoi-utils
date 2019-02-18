@@ -39,7 +39,6 @@ jobs:
       - checkout
       - *update_conda
       - *install_kipoiutils
-      - *kipoi_ls
       - *run_tests
       - *run_coveralls
       - *store_test_results
