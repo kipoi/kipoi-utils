@@ -1,0 +1,75 @@
+version: 2
+
+variables:
+  update_conda: &update_conda
+    run:
+      name: Update conda
+      command: conda update --yes conda
+
+  install_kipoiutils: &install_kipoiutils
+    run:
+      name: Install kipoiutils
+      command: pip install '.[develop]'
+  run_tests: &run_tests
+    run:
+      name: Run tests
+      command: |
+        mkdir test-reports
+        py.test --cov=kipoiutils/ tests/ -n 1 --no-cov-on-fail --junitxml=test-reports/junit.xml
+  run_coveralls: &run_coveralls
+    run:
+      name: run coveralls
+      command: coveralls || true
+  store_test_results: &store_test_results
+    store_test_results:
+      path: test-reports
+  store_test_artifacts: &store_test_artifacts
+    store_artifacts:
+      path: test-reports
+      destination: test-reports
+
+
+jobs:
+
+  test-py36:
+    docker:
+      - image: kipoi/miniconda3:4.3.14
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - *update_conda
+      - *install_kipoiutils
+      - *kipoi_ls
+      - *run_tests
+      - *run_coveralls
+      - *store_test_results
+      - *store_test_artifacts
+
+  test-py27:
+    docker:
+      - image: kipoi/miniconda:4.3.14
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - *update_conda
+      - *install_kipoiutils
+      - *run_tests
+      - *store_test_results
+      - *store_test_artifacts
+      
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - test-py36
+      - test-py27
+      - build-deploy-docs:
+          requires:
+            - test-py36
+            - test-py27
+          filters:
+            branches:
+              only:
+                - master
+                - test_deployment_script
