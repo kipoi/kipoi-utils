@@ -3,11 +3,12 @@
 
 from setuptools import setup, find_packages
 
+
 requirements = [
     "pandas>=0.21.0",
     "tqdm",
-    "attrs>=17.4.0",
-    "related>=0.6.0",
+    "attrs",
+    "related",
     "six",
     "tqdm",
     "numpy"
@@ -16,7 +17,7 @@ requirements = [
 test_requirements = [
     "bumpversion",
     "wheel",
-    "pytest>=3.3.1",
+    "pytest",
     "pytest-xdist",  # running tests in parallel
     "pytest-pep8",  # see https://github.com/kipoi/kipoi/issues/91
     "pytest-cov",
@@ -25,7 +26,7 @@ test_requirements = [
 desc = "kipoi-utils: utils used in various packages related to kipoi"
 setup(
     name='kipoi_utils',
-    version='0.1.0',
+    version='0.1.1',
     description=desc,
     author="Kipoi team",
     author_email='thorsten.beier@embl.de',
