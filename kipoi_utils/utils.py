@@ -14,6 +14,7 @@ import glob
 import os
 import sys
 import subprocess
+from subprocess import Popen, PIPE, STDOUT
 import numpy as np
 import functools
 import yaml
@@ -24,6 +25,46 @@ import logging
 import collections
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
+
+def _call_command(cmd, extra_args, use_stdout=False,
+                  return_logs_with_stdout=False, **kwargs):
+    """
+    Args:
+      return_logs_with_stdout (bool): If True, return also the logged lines
+          (it only takes an effect with use_stdout)
+    """
+    # call conda with the list of extra arguments, and return the tuple
+    # stdout, stderr
+    cmd_list = [cmd]  # just use whatever conda is on the path
+
+    cmd_list.extend(extra_args)
+
+    try:
+        if use_stdout:
+            p = Popen(cmd_list, stdout=PIPE, universal_newlines=True, **kwargs)
+            # Poll process for new output until finished
+            if return_logs_with_stdout:
+                out = []
+            for stdout_line in iter(p.stdout.readline, ""):
+                print(stdout_line, end='')
+                if return_logs_with_stdout:
+                    out.append(stdout_line.rstrip())
+            p.stdout.close()
+            return_code = p.wait()
+            if return_code:
+                raise subprocess.CalledProcessError(return_code, cmd_list)
+            if return_logs_with_stdout:
+                return return_code, out
+            else:
+                return return_code
+        else:
+            p = Popen(cmd_list, stdout=PIPE, stderr=PIPE, **kwargs)
+    except OSError:
+        raise Exception("could not invoke {0}\n".format(cmd_list))
+    return p.communicate()
+
+
 
 
 # recursive get and setattr
