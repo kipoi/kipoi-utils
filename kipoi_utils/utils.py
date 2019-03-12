@@ -39,8 +39,6 @@ def _call_command(cmd, extra_args, use_stdout=False,
     cmd_list = [cmd]  # just use whatever conda is on the path
 
     cmd_list.extend(extra_args)
-
-    print("main cmd", cmd, extra_args)
     if dry_run:
         return cmd, extra_args
     try:
@@ -67,7 +65,7 @@ def _call_command(cmd, extra_args, use_stdout=False,
             print("b")
             p = Popen(cmd_list, stdout=PIPE, stderr=PIPE, **kwargs)
 
-    except Exception as e:
+    except OSError as e:
         raise Exception("could not invoke {0}\n".format(cmd_list) + str(e))
     return p.communicate()
 
