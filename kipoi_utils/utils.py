@@ -64,8 +64,12 @@ def _call_command(cmd, extra_args, use_stdout=False,
                     return return_code
     except OSError as e:
         raise Exception("could not invoke {0}\n".format(cmd_list) + str(e))
-    return p.communicate()
-
+    r = None
+    try:    
+        r = p.communicate()
+    except:
+        r = None
+    return r
 
 
 
