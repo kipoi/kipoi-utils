@@ -28,7 +28,7 @@ logger.addHandler(logging.NullHandler())
 
 
 def _call_command(cmd, extra_args, use_stdout=False,
-                  return_logs_with_stdout=True, dry_run=False, **kwargs):
+                  return_logs_with_stdout=False, dry_run=False, **kwargs):
     """
     Args:
       return_logs_with_stdout (bool): If True, return also the logged lines
