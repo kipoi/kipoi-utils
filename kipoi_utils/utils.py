@@ -48,7 +48,8 @@ def _call_command(cmd, extra_args, use_stdout=False,
                 out = []
             error_out = []
             for stdout_line in iter(p.stdout.readline, ""):
-                print(stdout_line, end='')
+                if use_stdout:
+                    print(stdout_line, end='')
                 l = str(stdout_line.rstrip())
                 error_out.append(l)
                 if return_logs_with_stdout:
@@ -64,11 +65,11 @@ def _call_command(cmd, extra_args, use_stdout=False,
                     return return_code
     except OSError as e:
         raise Exception("could not invoke {0}\n".format(cmd_list) + str(e))
-    r = None
+    r = []
     try:    
         r = p.communicate()
     except:
-        r = None
+        r = []
     return r
 
 
