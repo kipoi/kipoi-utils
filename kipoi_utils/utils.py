@@ -42,26 +42,26 @@ def _call_command(cmd, extra_args, use_stdout=False,
     if dry_run:
         return cmd, extra_args
     try:
-        if use_stdout:
             p = Popen(cmd_list, stdout=PIPE, universal_newlines=True, **kwargs)
             # Poll process for new output until finished
             if return_logs_with_stdout:
                 out = []
+            error_out = []
             for stdout_line in iter(p.stdout.readline, ""):
                 print(stdout_line, end='')
+                l = str(stdout_line.rstrip())
+                error_out.append(l)
                 if return_logs_with_stdout:
-                    out.append(stdout_line.rstrip())
+                    out.append(l)
             p.stdout.close()
             return_code = p.wait()
             if return_code:
-                raise subprocess.CalledProcessError(return_code, cmd_list)
-            if return_logs_with_stdout:
-                return return_code, out
-            else:
-                return return_code
-        else:
-            p = Popen(cmd_list, stdout=PIPE, stderr=PIPE, **kwargs)
-
+                raise RuntimeError('calling {0} failed:\n{1}'%( str(cmd_list), str(error_out)))
+            if use_stdout:       
+                if return_logs_with_stdout:
+                    return return_code, out
+                else:
+                    return return_code
     except OSError as e:
         raise Exception("could not invoke {0}\n".format(cmd_list) + str(e))
     return p.communicate()
