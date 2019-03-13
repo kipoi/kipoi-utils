@@ -43,7 +43,6 @@ def _call_command(cmd, extra_args, use_stdout=False,
         return cmd, extra_args
     try:
         if use_stdout:
-            print("a")
             p = Popen(cmd_list, stdout=PIPE, universal_newlines=True, **kwargs)
             # Poll process for new output until finished
             if return_logs_with_stdout:
@@ -54,7 +53,6 @@ def _call_command(cmd, extra_args, use_stdout=False,
                     out.append(stdout_line.rstrip())
             p.stdout.close()
             return_code = p.wait()
-            print("main cmd", cmd, return_code)
             if return_code:
                 raise subprocess.CalledProcessError(return_code, cmd_list)
             if return_logs_with_stdout:
@@ -62,7 +60,6 @@ def _call_command(cmd, extra_args, use_stdout=False,
             else:
                 return return_code
         else:
-            print("b")
             p = Popen(cmd_list, stdout=PIPE, stderr=PIPE, **kwargs)
 
     except OSError as e:
