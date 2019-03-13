@@ -44,7 +44,8 @@ def _call_command(cmd, extra_args, use_stdout=False,
     try:
             p = Popen(cmd_list, stdout=PIPE, universal_newlines=True, **kwargs)
             # Poll process for new output until finished
-            out = []
+            if return_logs_with_stdout:
+                out = []
             error_out = []
             for stdout_line in iter(p.stdout.readline, ""):
                 print(stdout_line, end='')
