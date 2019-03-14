@@ -58,7 +58,7 @@ def _call_command(cmd, extra_args, use_stdout=False,
             p.stdout.close()
             return_code = p.wait()
             if return_code:
-                raise Exception("could not invoke {0} \nreturn code:{1}\nadditional info:{2}".format(cmd_list, "\n".join(error_out), str(error_out)))
+                raise Exception("could not invoke {0} \nreturn code:{1}\nadditional info:{2}".format(cmd_list, return_code, "".join(error_out)))
                 #raise subprocess.CalledProcessError(return_code, cmd_list)
             if return_logs_with_stdout:
                 return return_code, out
