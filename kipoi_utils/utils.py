@@ -303,7 +303,6 @@ def parse_json_file_str_or_arglist(dataloader_args, parser=None):
                 raise RuntimeError('cannot parse arg {0}'.format(str(arg_str)))
         else:
             splitted = arg_str.split("=")
-            print(f"arg_str {arg_str}")
             if len(splitted) != 2:
                 if parser is not None:
                     parser.error('cannot parse arg {0}'.format(str(arg_str)))
@@ -311,10 +310,8 @@ def parse_json_file_str_or_arglist(dataloader_args, parser=None):
                     raise RunningError('cannot parse arg {0}'.format(str(arg_str)))
             else:
                 key, valstr = splitted
-                print(f"key {key} valstr {repr(valstr)} ")
                 try:
                     pr = ast.literal_eval(valstr)
-                    print(f"parsed as {type(pr)} repr {repr(pr)} ")
                     kwargs[key] = ast.literal_eval(valstr)
                 except :
                     kwargs[key] = valstr
