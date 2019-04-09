@@ -23,6 +23,8 @@ from contextlib import contextmanager
 import inspect
 import logging
 import collections
+import ast
+
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
@@ -203,7 +205,7 @@ def infer_parent_class(cls, class_dict):
             return dl_type
     return type_inferred
 
-
+# todo move to kipoi conda
 def pip_install_requirements(requirements_fname):
     if os.path.exists(requirements_fname):  # install dependencies
         logger.info('Running pip install -r {}...'.format(requirements_fname))
@@ -263,6 +265,61 @@ def parse_json_file_str(extractor_args):
         logger.debug("Parsing the extractor_args as a json file path")
         with open(extractor_args, "r", encoding="utf-8") as f:
             return yaml.load(f.read())
+
+
+def parse_json_file_str_or_arglist(dataloader_args, parser=None):
+    """Parse a list strings as json string, or as file path to a .json file
+        Format 1, json string, or as custom format 
+            ['{key:val, key2:val2}']
+
+        Format 2, filenamew:
+            ['foo/bar/foobar.json']
+
+        Format 3 custom: 
+            ['key=val', 'key2=val2']
+    """
+    if dataloader_args is not None and not isinstance(dataloader_args, list):
+        raise RuntimeError("wrong usage, dataloader_args must be a list")
+
+    if dataloader_args is None or len(dataloader_args) == 0:
+        return dict()
+
+    elif len(dataloader_args) == 1:
+        arg0 = dataloader_args[0].strip("'").strip('"')
+
+        if arg0.startswith('{') and arg0.endswith('}'):
+            return parse_json_file_str(dataloader_args[0])
+
+        elif "=" not in arg0:
+            return parse_json_file_str(dataloader_args[0])
+
+
+    kwargs = {}
+    for arg_str in dataloader_args:
+        if "=" not in arg_str:
+            if parser is not None:
+                parser.error('cannot parse arg {0}'.format(str(arg_str)))
+            else:
+                raise RuntimeError('cannot parse arg {0}'.format(str(arg_str)))
+        else:
+            splitted = arg_str.split("=")
+            print(f"arg_str {arg_str}")
+            if len(splitted) != 2:
+                if parser is not None:
+                    parser.error('cannot parse arg {0}'.format(str(arg_str)))
+                else:
+                    raise RunningError('cannot parse arg {0}'.format(str(arg_str)))
+            else:
+                key, valstr = splitted
+                print(f"key {key} valstr {repr(valstr)} ")
+                try:
+                    pr = ast.literal_eval(valstr)
+                    print(f"parsed as {type(pr)} repr {repr(pr)} ")
+                    kwargs[key] = ast.literal_eval(valstr)
+                except :
+                    kwargs[key] = valstr
+
+    return kwargs
 
 
 # https://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts
