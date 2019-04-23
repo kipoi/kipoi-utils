@@ -26,7 +26,7 @@ test_requirements = [
 desc = "kipoi-utils: utils used in various packages related to kipoi"
 setup(
     name='kipoi_utils',
-    version='0.1.11',
+    version='0.1.12',
     description=desc,
     author="Kipoi team",
     author_email='thorsten.beier@embl.de',
