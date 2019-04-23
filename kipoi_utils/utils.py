@@ -307,7 +307,7 @@ def parse_json_file_str_or_arglist(dataloader_args, parser=None):
                 if parser is not None:
                     parser.error('cannot parse arg {0}'.format(str(arg_str)))
                 else:
-                    raise RunningError('cannot parse arg {0}'.format(str(arg_str)))
+                    raise RuntimeError('cannot parse arg {0}'.format(str(arg_str)))
             else:
                 key, valstr = splitted
                 try:
