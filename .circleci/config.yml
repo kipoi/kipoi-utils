@@ -43,26 +43,12 @@ jobs:
       - *run_coveralls
       - *store_test_results
       - *store_test_artifacts
-
-  test-py27:
-    docker:
-      - image: kipoi/miniconda:4.3.14
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - *update_conda
-      - *install_kipoi_utils
-      - *run_tests
-      - *store_test_results
-      - *store_test_artifacts
-      
 workflows:
   version: 2
 
   test:
     jobs:
       - test-py36
-      - test-py27
       # - build-deploy-docs:
       #     requires:
       #       - test-py36
