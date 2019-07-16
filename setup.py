@@ -11,7 +11,8 @@ requirements = [
     "related",
     "six",
     "tqdm",
-    "numpy"
+    "numpy",
+    "PyYAML>=5.1.0"
 ]
 
 test_requirements = [
