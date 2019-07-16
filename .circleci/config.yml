@@ -6,20 +6,30 @@ variables:
       name: Update conda
       command: conda update --yes conda
 
+  create_conda_env: &create_conda_env
+    run:
+      name: create conda env
+      command: conda env create -n kipoi-dev python=3.6 pip
+
   install_kipoi_utils: &install_kipoi_utils
     run:
       name: Install kipoi_utils
-      command: pip install '.[develop]'
+      command: |
+        source activate kipoi-dev
+        pip install '.[develop]'
   run_tests: &run_tests
     run:
       name: Run tests
       command: |
         mkdir test-reports
+        source activate kipoi-dev
         py.test --cov=kipoi_utils/ tests/ -n 1 --no-cov-on-fail --junitxml=test-reports/junit.xml
   run_coveralls: &run_coveralls
     run:
       name: run coveralls
-      command: coveralls || true
+      command: |
+        source activate kipoi-dev
+        coveralls || true
   store_test_results: &store_test_results
     store_test_results:
       path: test-reports
@@ -38,6 +48,7 @@ jobs:
     steps:
       - checkout
       - *update_conda
+      - *create_conda_env
       - *install_kipoi_utils
       - *run_tests
       - *run_coveralls
