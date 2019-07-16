@@ -258,13 +258,13 @@ def parse_json_file_str(extractor_args):
     extractor_args = extractor_args.strip("'").strip('"')
     if extractor_args.startswith("{") or extractor_args.endswith("}"):
         logger.debug("Parsing the extractor_args as a json string")
-        return yaml.load(extractor_args)
+        return yaml.load(extractor_args, Loader=yaml.FullLoader)
     else:
         if not os.path.exists(extractor_args):
             raise ValueError("File path: {0} doesn't exist".format(extractor_args))
         logger.debug("Parsing the extractor_args as a json file path")
         with open(extractor_args, "r", encoding="utf-8") as f:
-            return yaml.load(f.read())
+            return yaml.load(f.read(), Loader=yaml.FullLoader)
 
 
 def parse_json_file_str_or_arglist(dataloader_args, parser=None):
@@ -472,7 +472,7 @@ def override_default_kwargs(fn_cls, kwargs):
 
 def read_yaml(path):
     with open(path, "r", encoding="utf-8") as f:
-        return yaml.load(f)
+        return yaml.load(f, Loader=yaml.FullLoader)
 
 
 def cmd_exists(cmd):
