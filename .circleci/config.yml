@@ -9,7 +9,7 @@ variables:
   create_conda_env: &create_conda_env
     run:
       name: create conda env
-      command: conda env create -n kipoi-dev python=3.6 pip
+      command: conda env create -n kipoi-dev python=3.6
 
   install_kipoi_utils: &install_kipoi_utils
     run:
