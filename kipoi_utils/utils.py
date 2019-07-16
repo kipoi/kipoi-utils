@@ -258,7 +258,7 @@ def parse_json_file_str(extractor_args):
     extractor_args = extractor_args.strip("'").strip('"')
     if extractor_args.startswith("{") or extractor_args.endswith("}"):
         logger.debug("Parsing the extractor_args as a json string")
-        return yaml.load(extractor_arg, Loader=yaml.FullLoader)
+        return yaml.load(extractor_args, Loader=yaml.FullLoader)
     else:
         if not os.path.exists(extractor_args):
             raise ValueError("File path: {0} doesn't exist".format(extractor_args))
