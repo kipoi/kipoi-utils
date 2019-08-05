@@ -6,6 +6,7 @@ import os
 import os.path
 import hashlib
 import errno
+import psutil
 from tqdm import tqdm
 import imp
 import six
@@ -27,6 +28,22 @@ import ast
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
+
+
+def kill_process_and_children(proc_pid):
+    process = psutil.Process(proc_pid)
+    for proc in process.children(recursive=True):
+        proc.terminate()
+        try:
+            proc.wait(timeout=1)
+        except TimeoutError:
+            proc.kill()
+    process.terminate()
+    try:
+        proc.wait(timeout=1)
+    except TimeoutError:
+        proc.kill()
 
 
 
