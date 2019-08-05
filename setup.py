@@ -12,7 +12,8 @@ requirements = [
     "six",
     "tqdm",
     "numpy",
-    "PyYAML>=5.1.0"
+    "PyYAML>=5.1.0",
+    "psutil"
 ]
 
 test_requirements = [
@@ -27,7 +28,7 @@ test_requirements = [
 desc = "kipoi-utils: utils used in various packages related to kipoi"
 setup(
     name='kipoi_utils',
-    version='0.3.0',
+    version='0.3.2',
     description=desc,
     author="Kipoi team",
     author_email='thorsten.beier@embl.de',
