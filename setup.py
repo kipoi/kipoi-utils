@@ -12,7 +12,8 @@ requirements = [
     "six",
     "tqdm",
     "numpy",
-    "PyYAML>=5.1.0"
+    "PyYAML>=5.1.0",
+    "psuitl>5.6.3"
 ]
 
 test_requirements = [
