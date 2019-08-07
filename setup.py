@@ -13,7 +13,7 @@ requirements = [
     "tqdm",
     "numpy",
     "PyYAML>=5.1.0",
-    "psutil"
+    #"psutil"
 ]
 
 test_requirements = [
