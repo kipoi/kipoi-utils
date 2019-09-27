@@ -69,7 +69,7 @@ def _call_command(cmd, extra_args, use_stdout=False,
             for stdout_line in iter(p.stdout.readline, ""):
                 stripped_line = stdout_line.rstrip()
                 print(stdout_line, end='')
-                error_out.append(stripped_line.replace('\x1b','\n'))
+                error_out.append(stripped_line.replace('\x1b', '\n'))
                 if return_logs_with_stdout:
                     out.append(stripped_line)
             p.stdout.close()
@@ -86,9 +86,8 @@ def _call_command(cmd, extra_args, use_stdout=False,
 
     except OSError as e:
         raise Exception("could not invoke {0}\n".format(cmd_list) + str(e))
-    
-    return p.communicate()
 
+    return p.communicate()
 
 
 # recursive get and setattr
@@ -308,7 +307,6 @@ def parse_json_file_str_or_arglist(dataloader_args, parser=None):
         elif "=" not in arg0:
             return parse_json_file_str(dataloader_args[0])
 
-
     kwargs = {}
     for arg_str in dataloader_args:
         if "=" not in arg_str:
@@ -328,7 +326,7 @@ def parse_json_file_str_or_arglist(dataloader_args, parser=None):
                 try:
                     pr = ast.literal_eval(valstr)
                     kwargs[key] = ast.literal_eval(valstr)
-                except :
+                except:
                     kwargs[key] = valstr
 
     return kwargs
@@ -597,9 +595,9 @@ def map_nested(dd, fn):
       dd: nested data structure
       fn: function to apply to each leaf
     """
-    if isinstance(dd, collections.Mapping):
+    if isinstance(dd, dict):
         return {key: map_nested(dd[key], fn) for key in dd}
-    elif isinstance(dd, collections.Sequence):
+    elif isinstance(dd, list):
         return [map_nested(x, fn) for x in dd]
     else:
         return fn(dd)
