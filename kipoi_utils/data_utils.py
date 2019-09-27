@@ -7,6 +7,7 @@ from kipoi_utils.utils import map_nested
 import pandas as pd
 import six
 from kipoi_utils.external.flatten_json import flatten
+
 # string_classes
 if sys.version_info[0] == 2:
     string_classes = basestring
@@ -41,11 +42,13 @@ def _numpy_collate(stack_fn=np.stack):
 
         raise TypeError(("batch must contain tensors, numbers, dicts or lists; found {}"
                          .format(type(batch[0]))))
+
     return numpy_collate_fn
 
 
 numpy_collate = _numpy_collate(np.stack)
 numpy_collate_concat = _numpy_collate(np.concatenate)
+
 
 # ----------------------------------------------
 
@@ -82,6 +85,7 @@ class DataloaderIterable(object):
 
     def __iter__(self):
         return self.dl_obj.batch_iter(**self.kwargs)
+
 
 # --------------------------------------------
 # Tools for working with a nested dataset
@@ -140,6 +144,7 @@ def flatten_batch(batch, nested_sep="/"):
     Returns:
       A dictionary of 1-dimensional numpy arrays.
     """
+
     def array2array_dict(arr):
         """Convert a numpy array into a dictionary of numpy arrays
 
@@ -154,8 +159,10 @@ def flatten_batch(batch, nested_sep="/"):
                                                 for i in range(arr.shape[1])])
         elif isinstance(arr, pd.DataFrame):
             return {k: v.values for k, v in six.iteritems(arr.to_dict("records"))}
+        elif (arr.__class__.__module__, arr.__class__.__name__) == ('kipoi.metadata', 'GenomicRanges'):
+            return arr.to_dict()
         else:
-            raise ValueError("Unknown data type")
+            raise ValueError("Unknown data type: %s" % str(type(arr)))
 
     return flatten(map_nested(batch, array2array_dict),
                    separator=nested_sep)
