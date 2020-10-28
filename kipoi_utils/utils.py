@@ -60,35 +60,31 @@ def _call_command(cmd, extra_args, use_stdout=False,
     if dry_run:
         return cmd, extra_args
     try:
-        if use_stdout:
-            p = Popen(cmd_list, stdout=PIPE, universal_newlines=True, **kwargs)
+        p = Popen(cmd_list, stdout=PIPE, universal_newlines=True, **kwargs)
             # Poll process for new output until finished
-            error_out = []
-            if return_logs_with_stdout:
-                out = []
-            for stdout_line in iter(p.stdout.readline, ""):
-                stripped_line = stdout_line.rstrip()
+        error_out = []
+        if return_logs_with_stdout:
+            out = []
+        for stdout_line in iter(p.stdout.readline, ""):
+            stripped_line = stdout_line.rstrip()
+            if use_stdout:
                 print(stdout_line, end='')
-                error_out.append(stripped_line.replace('\x1b', '\n'))
-                if return_logs_with_stdout:
-                    out.append(stripped_line)
-            p.stdout.close()
-            return_code = p.wait()
-            if return_code:
-                raise Exception("could not invoke {0} \nreturn code:{1}\nadditional info:{2}".format(cmd_list, return_code, "".join(error_out)))
-                #raise subprocess.CalledProcessError(return_code, cmd_list)
+            error_out.append(stripped_line.replace('\x1b', '\n'))
             if return_logs_with_stdout:
-                return return_code, out
-            else:
-                return return_code
+                out.append(stripped_line)
+        p.stdout.close()
+        return_code = p.wait()
+        if return_code:
+            raise Exception("could not invoke {0} \nreturn code:{1}\nadditional info:{2}".format(cmd_list, return_code, "".join(error_out)))
+                #raise subprocess.CalledProcessError(return_code, cmd_list)
+        if return_logs_with_stdout:
+            return return_code, out
         else:
-            p = Popen(cmd_list, stdout=PIPE, stderr=PIPE, **kwargs)
-
+            return return_code
     except OSError as e:
         raise Exception("could not invoke {0}\n".format(cmd_list) + str(e))
 
     return p.communicate()
-
 
 # recursive get and setattr
 # https://stackoverflow.com/a/31174427
