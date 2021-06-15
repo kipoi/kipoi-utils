@@ -5,6 +5,7 @@ import errno
 from tqdm import tqdm
 import gzip
 import tarfile
+import time
 import zipfile
 
 
@@ -60,22 +61,31 @@ def download_url(url, root, filename, md5=''):
     if os.path.isfile(fpath) and check_integrity(fpath, md5):
         print('Using downloaded and verified file: ' + fpath)
     else:
-        try:
-            print('Downloading ' + url + ' to ' + fpath)
-            urllib.request.urlretrieve(
-                url, fpath,
-                reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True))
-            )
-        except Exception:
-            if url[:5] == 'https':
-                url = url.replace('https:', 'http:')
-                print('Failed download. Trying https -> http instead.'
-                      ' Downloading ' + url + ' to ' + fpath)
+        # https://developers.google.com/maps/documentation/elevation/web-service-best-practices#exponential-backoff
+        current_delay = 0.1  # Set the initial retry delay to 100ms.
+        max_delay = 5  # Set the maximum retry delay to 5 seconds.
+        while True:
+            try:
+                print('Downloading ' + url + ' to ' + fpath)
                 urllib.request.urlretrieve(
-                    url, fpath,
-                    reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True))
-                )
+                url, fpath,
+                reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True)))
+            except urllib.error.URLError:
+                if url[:5] == 'https':
+                    url = url.replace('https:', 'http:')
+                    print('Failed download. Trying https -> http instead.'
+                        ' Downloading ' + url + ' to ' + fpath)
+                    urllib.request.urlretrieve(
+                        url, fpath,
+                        reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True))
+                    )
+            if current_delay > max_delay:
+                raise Exception("Too many retry attempts.")
+            
+            print("Waiting", current_delay, "seconds before retrying.")
 
+            time.sleep(current_delay)
+            current_delay *= 2  # Increase the delay each time we retry.
 
 def _is_tarxz(filename):
     return filename.endswith(".tar.xz")
