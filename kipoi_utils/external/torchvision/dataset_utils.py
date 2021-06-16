@@ -48,44 +48,57 @@ def makedir_exist_ok(dirpath):
         else:
             raise
 
+def retry_download(url, fpath):
+    # https://developers.google.com/maps/documentation/elevation/web-service-best-practices#exponential-backoff
+    from six.moves import urllib
+    current_delay = 0.1  # Set the initial retry delay to 100ms.
+    max_delay = 5  # Set the maximum retry delay to 5 seconds.
+    success = False
+    while not success:
+        try:
+            print('Downloading ' + url + ' to ' + fpath)
+            urllib.request.urlretrieve(
+            url, fpath,
+            reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True)))
+            success = True
+        except urllib.error.URLError:
+            if current_delay > max_delay:
+                break
+            
+            print("Waiting", current_delay, "seconds before retrying.")
+
+            time.sleep(current_delay)
+            current_delay *= 2  # Increase the delay each time we retry.
+    return success
 
 def download_url(url, root, filename, md5=''):
-    from six.moves import urllib
+    # downloads file
+    # TODO: Why is the following necessary? I could not find any occurance of this statement when the download 
+    # is successful. If we dont have to add the following this code can become a little clener.
+    # if url[:5] == 'https':
+        # url = url.replace('https:', 'http:')
+        # print('Failed download. Trying https -> http instead.'
+        #     ' Downloading ' + url + ' to ' + fpath)
 
     root = os.path.expanduser(root)
     fpath = os.path.join(root, filename)
 
     makedir_exist_ok(root)
 
-    # downloads file
     if os.path.isfile(fpath) and check_integrity(fpath, md5):
         print('Using downloaded and verified file: ' + fpath)
     else:
-        # https://developers.google.com/maps/documentation/elevation/web-service-best-practices#exponential-backoff
-        current_delay = 0.1  # Set the initial retry delay to 100ms.
-        max_delay = 5  # Set the maximum retry delay to 5 seconds.
-        while True:
-            try:
-                print('Downloading ' + url + ' to ' + fpath)
-                urllib.request.urlretrieve(
-                url, fpath,
-                reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True)))
-            except urllib.error.URLError:
-                if url[:5] == 'https':
-                    url = url.replace('https:', 'http:')
-                    print('Failed download. Trying https -> http instead.'
-                        ' Downloading ' + url + ' to ' + fpath)
-                    urllib.request.urlretrieve(
-                        url, fpath,
-                        reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True))
-                    )
-            if current_delay > max_delay:
-                raise Exception("Too many retry attempts.")
-            
-            print("Waiting", current_delay, "seconds before retrying.")
+        success = retry_download(url, fpath)
+        if not success:
+            if url[:5] == 'https':
+                url = url.replace('https:', 'http:')
+                print('Failed download. Trying https -> http instead.'
+                    ' Downloading ' + url + ' to ' + fpath)
+                success = retry_download(url, fpath)
 
-            time.sleep(current_delay)
-            current_delay *= 2  # Increase the delay each time we retry.
+        if not success:
+            raise Exception("Can not download " + url + ' to ' + fpath)
+
 
 def _is_tarxz(filename):
     return filename.endswith(".tar.xz")
