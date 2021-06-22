@@ -72,6 +72,7 @@ def retry_download(url, fpath):
 
 def download_url(url, root, filename, md5=''):
     # downloads file
+    from six.moves import urllib
 
     root = os.path.expanduser(root)
     fpath = os.path.join(root, filename)
@@ -82,7 +83,6 @@ def download_url(url, root, filename, md5=''):
         print('Using downloaded and verified file: ' + fpath)
     else:
         # https://developers.google.com/maps/documentation/elevation/web-service-best-practices#exponential-backoff
-        from six.moves import urllib
         current_delay = 0.1  # Set the initial retry delay to 100ms.
         max_delay = 5  # Set the maximum retry delay to 5 seconds.
         while True:
@@ -91,6 +91,7 @@ def download_url(url, root, filename, md5=''):
                 urllib.request.urlretrieve(
                 url, fpath,
                 reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True)))
+                break
             except urllib.error.URLError:
                 pass
            
