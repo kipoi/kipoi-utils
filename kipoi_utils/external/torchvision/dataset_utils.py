@@ -48,28 +48,6 @@ def makedir_exist_ok(dirpath):
         else:
             raise
 
-def retry_download(url, fpath):
-    # https://developers.google.com/maps/documentation/elevation/web-service-best-practices#exponential-backoff
-    from six.moves import urllib
-    current_delay = 0.1  # Set the initial retry delay to 100ms.
-    max_delay = 5  # Set the maximum retry delay to 5 seconds.
-    while True:
-        try:
-            print('Downloading ' + url + ' to ' + fpath)
-            urllib.request.urlretrieve(
-            url, fpath,
-            reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True)))
-        except urllib.error.URLError:
-            pass
-        else:
-            if current_delay > max_delay:
-                raise Exception("Too many retry attempts.")
-            
-            print("Waiting", current_delay, "seconds before retrying.")
-
-            time.sleep(current_delay)
-            current_delay *= 2  # Increase the delay each time we retry.
-
 def download_url(url, root, filename, md5=''):
     # downloads file
     from six.moves import urllib
