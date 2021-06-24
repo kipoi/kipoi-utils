@@ -107,10 +107,38 @@ jobs:
             python -m pip install --user --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple kipoi_utils --verbose
             python -c "import kipoi_utils; print(kipoi_utils.__version__)"
     
+  productive-deploy-pypi:
+    docker:
+      - image: continuumio/miniconda3:4.7.10
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - *update_conda
+      - *create_conda_env
+      - *install_kipoi_utils
+      - *run_tests
+      - *build_pypi_package
+      - *conda_install_twine
+      - *pypi_create_pypirc
+      - run:
+          name: check if commit is tagged
+          command: git describe --exact-match --tags HEAD && echo "commit is tagged; continuing" || circleci step halt
+      - run:
+          name: upload to PyPI
+          command: twine upload --repository pypi dist/* --verbose
+      - run:
+          name: pip install from PyPI
+          command: |
+            source activate kipoi-dev
+            python -m pip install --user kipoi_utils --verbose
+            python -c "import kipoi_utils; print(kipoi_utils.__version__)"          
 
 workflows:
   version: 2
 
+  test:
+    jobs:
+      - test-py36
   test-n-deploy:
     jobs:
       - test-py36
@@ -121,4 +149,11 @@ workflows:
             branches:
               only:
                 - add-pypi-deployment
+      - productive-deploy-pypi:
+          requires:
+            - test-py36
+          filters:
+            branches:
+              only:
+                - master
 
