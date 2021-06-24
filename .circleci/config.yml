@@ -80,6 +80,7 @@ jobs:
       - *run_coveralls
       - *store_test_results
       - *store_test_artifacts
+
   test-deploy-pypi:
     docker:
       - image: continuumio/miniconda3:4.7.10
@@ -114,9 +115,10 @@ workflows:
     jobs:
       - test-py36
       - test-deploy-pypi:
-        requires:
-          - test-py36
-        filters:
-          branches:
-            only:
-              - add-pypi-deployment
+          requires:
+            - test-py36
+          filters:
+            branches:
+              only:
+                - add-pypi-deployment
+
