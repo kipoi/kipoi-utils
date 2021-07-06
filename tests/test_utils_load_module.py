@@ -116,6 +116,46 @@ def test_override_default_args():
     with pytest.raises(ValueError):
         override_default_kwargs(A, dict(c=4))
 
+def test_override_multiple_default_args():
+    def fn(a, b, c, d=4, e=5):
+        return a, b, c, d, e
+    assert fn(1, 2, 3) == (1, 2, 3, 4, 5)
+    assert override_default_kwargs(fn, {})(1, 2, 3, 4, 5) == (1, 2, 3, 4, 5)
+
+    fn2 = override_default_kwargs(fn, {"d": 20})
+    assert fn2(1, 2, 3) == (1, 2, 3, 20, 5)
+    assert fn2(1, 2, 3, 10, 20) == (1, 2, 3, 10, 20)
+    # original function unchangd
+    assert fn(1, 2, 3) == (1, 2, 3, 4, 5)
+
+    with pytest.raises(TypeError) as e:
+        fn2(1)
+    assert "fn() missing 2 required positional arguments: 'b' and 'c'" in str(e.value)
+    
+    class A(object):
+        def __init__(self, a, b, c, d=4, e=5):
+            self.a = a
+            self.b = b
+            self.c = c
+            self.d = d
+            self.e = e
+
+        def get_values(self):
+            return self.a, self.b, self.c, self.d, self.e
+    with pytest.raises(TypeError) as e:
+        A(1).get_values()
+    assert "__init__() missing 2 required positional arguments: 'b' and 'c'" in str(e.value)
+    
+    B = override_default_kwargs(A, dict(b=10, c=20))
+    assert B(1).get_values() == (1, 10, 20, 4, 5)
+    # original class unchangd
+    with pytest.raises(TypeError) as e:
+        A(1).get_values()
+    assert "__init__() missing 2 required positional arguments: 'b' and 'c'" in str(e.value)
+    assert B(1, 30, 40).get_values() == (1, 30, 40, 4, 5)
+    with pytest.raises(ValueError) as err:
+        override_default_kwargs(A, dict(f=8))
+    assert str(err.value) == "argument 'f' not specified in function/class.__init__ <class 'kipoi_utils.utils.Overriddentest_override_multiple_default_args.<locals>.A'> with args: ['a', 'b', 'c', 'd', 'e']"
 
 def test_load_obj():
     with pytest.raises(ImportError):

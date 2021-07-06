@@ -462,13 +462,17 @@ def override_default_kwargs(fn_cls, kwargs):
 
     # set the appropriate args
     out = []
+    for arg_name in args[:-len(values)]:
+        if arg_name in kwargs:
+            out.append(kwargs[arg_name])
+
     for i, k in enumerate(args[-len(values):]):
         if k in kwargs:
             out.append(kwargs[k])
         else:
             out.append(values[i])
-    new_values = tuple(out)
 
+    new_values = tuple(out)
     if not inspect.isfunction(fn_cls):
         if sys.version_info[0] == 2:
             fn_cls.__init__.__func__.__defaults__ = new_values
