@@ -152,9 +152,10 @@ def test_override_multiple_default_args():
     with pytest.raises(TypeError) as e:
         A(1).get_values()
     assert "__init__() missing 2 required positional arguments: 'b' and 'c'" in str(e.value)
-    
     assert B(1, 30, 40).get_values() == (1, 30, 40, 4, 5)
-
+    with pytest.raises(ValueError) as err:
+        override_default_kwargs(A, dict(f=8))
+    assert str(err.value) == "argument 'f' not specified in function/class.__init__ <class 'kipoi_utils.utils.Overriddentest_override_multiple_default_args.<locals>.A'> with args: ['a', 'b', 'c', 'd', 'e']"
 
 def test_load_obj():
     with pytest.raises(ImportError):
