@@ -236,7 +236,7 @@ def compare_numpy_dict(a, b, exact=True, decimal=7):
         if not a.keys() == b.keys():
             return False
         for key in a.keys():
-            res = compare_numpy_dict(a[key], b[key], exact)
+            res = compare_numpy_dict(a[key], b[key], exact, decimal)
             if not res:
                 print("false for key = ", key)
                 return False
@@ -245,7 +245,7 @@ def compare_numpy_dict(a, b, exact=True, decimal=7):
     # compare two lists
     if type(a) == list and type(b) == list:
         assert len(a) == len(b)
-        return all([compare_numpy_dict(a[i], b[i], exact=exact)
+        return all([compare_numpy_dict(a[i], b[i], exact=exact, decimal=decimal)
                     for i in range(len(a))])
 
     # if type(a) == np.ndarray and type(b) == np.ndarray:
