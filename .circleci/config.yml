@@ -69,7 +69,7 @@ variables:
 
 jobs:
 
-  test-py36:
+  test-py39:
     docker:
       - image: continuumio/miniconda3:latest
     working_directory: ~/repo
