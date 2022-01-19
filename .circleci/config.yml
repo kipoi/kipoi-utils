@@ -9,7 +9,7 @@ variables:
   create_conda_env: &create_conda_env
     run:
       name: create conda env
-      command: conda create -n kipoi-dev python=3.6
+      command: conda create -n kipoi-dev python=3.9
 
   install_kipoi_utils: &install_kipoi_utils
     run:
@@ -69,9 +69,9 @@ variables:
 
 jobs:
 
-  test-py36:
+  test-py39:
     docker:
-      - image: continuumio/miniconda3:4.7.10
+      - image: continuumio/miniconda3:latest
     working_directory: ~/repo
     steps:
       - checkout
@@ -85,7 +85,7 @@ jobs:
 
   test-deploy-pypi:
     docker:
-      - image: continuumio/miniconda3:4.7.10
+      - image: continuumio/miniconda3:latest
     working_directory: ~/repo
     steps:
       - checkout
@@ -111,7 +111,7 @@ jobs:
     
   productive-deploy-pypi:
     docker:
-      - image: continuumio/miniconda3:4.7.10
+      - image: continuumio/miniconda3:latest
     working_directory: ~/repo
     steps:
       - checkout
@@ -142,20 +142,20 @@ workflows:
 
   test:
     jobs:
-      - test-py36
+      - test-py39
   test-n-deploy:
     jobs:
-      - test-py36
+      - test-py39
       - test-deploy-pypi:
           requires:
-            - test-py36
+            - test-py39
           filters:
             branches:
               only:
                 - add-pypi-deployment
       - productive-deploy-pypi:
           requires:
-            - test-py36
+            - test-py39
           filters:
             branches:
               only:
