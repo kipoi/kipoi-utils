@@ -88,9 +88,9 @@ def _pin_memory_loop(in_queue, out_queue, done_event):
 def pin_memory_batch(batch):
     if isinstance(batch, string_classes):
         return batch
-    elif isinstance(batch, collections.Mapping):
+    elif isinstance(batch, collections.abc.Mapping):
         return {k: pin_memory_batch(sample) for k, sample in batch.items()}
-    elif isinstance(batch, collections.Sequence):
+    elif isinstance(batch, collections.abc.Sequence):
         return [pin_memory_batch(sample) for sample in batch]
     else:
         return batch

@@ -26,7 +26,8 @@ SOFTWARE.
 import sys
 import json
 import collections
-from collections import Iterable, OrderedDict
+from collections.abc import Iterable
+from collections import OrderedDict
 
 import six
 
@@ -67,7 +68,7 @@ def flatten(dd, separator='_', prefix='', is_list_fn=lambda x: isinstance(x, lis
       is_list_fn: function to determine whether to split the list/numpy.array into indvidual classes or
         to include the element as value.
     """
-    if isinstance(dd, collections.Mapping):
+    if isinstance(dd, collections.abc.Mapping):
         return {prefix + separator + k if prefix else k: v
                 for kk, vv in six.iteritems(dd)
                 for k, v in six.iteritems(flatten(vv, separator, kk, is_list_fn))
@@ -90,7 +91,7 @@ def flatten_ordered(dd, separator='_', prefix='', is_list_fn=lambda x: isinstanc
       is_list_fn: function to determine whether to split the list/numpy.array into indvidual classes or
         to include the element as value.
     """
-    if isinstance(dd, collections.Mapping):
+    if isinstance(dd, collections.abc.Mapping):
         if not dd:
             return dd
         return OrderedDict([(prefix + separator + k if prefix else k, v)

@@ -611,9 +611,9 @@ def take_first_nested(dd):
 
     Example: take_first_nested({"a": [1,2,3], "b": 4}) == 1
     """
-    if isinstance(dd, collections.Mapping):
+    if isinstance(dd, collections.abc.Mapping):
         return take_first_nested(six.next(six.itervalues(dd)))
-    elif isinstance(dd, collections.Sequence):
+    elif isinstance(dd, collections.abc.Sequence):
         return take_first_nested(dd[0])
     else:
         return dd
@@ -680,7 +680,7 @@ def recursive_dict_parse(d, key, fn):
       fn: when a dict with `key` is found, apply a function
          to this dictionary
     """
-    if isinstance(d, collections.Mapping):
+    if isinstance(d, collections.abc.Mapping):
         if key in d:
             return fn(d)
         else:
