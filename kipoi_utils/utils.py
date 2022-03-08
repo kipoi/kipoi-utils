@@ -613,7 +613,7 @@ def take_first_nested(dd):
     """
     if isinstance(dd, collections.abc.Mapping):
         return take_first_nested(six.next(six.itervalues(dd)))
-    elif isinstance(dd, collections.Sequence):
+    elif isinstance(dd, collections.abc.Sequence):
         return take_first_nested(dd[0])
     else:
         return dd

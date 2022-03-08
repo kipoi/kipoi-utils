@@ -36,7 +36,7 @@ def _numpy_collate(stack_fn=np.stack):
             # return batch
         elif isinstance(batch[0], collections.abc.Mapping):
             return {key: numpy_collate_fn([d[key] for d in batch]) for key in batch[0]}
-        elif isinstance(batch[0], collections.Sequence):
+        elif isinstance(batch[0], collections.abc.Sequence):
             transposed = zip(*batch)
             return [numpy_collate_fn(samples) for samples in transposed]
 
@@ -106,7 +106,7 @@ def get_dataset_lens(data, require_numpy=False):
         # return data
     elif isinstance(data, collections.abc.Mapping) and not type(data).__module__ == 'numpy':
         return sum([get_dataset_lens(data[key], require_numpy) for key in data], [])
-    elif isinstance(data, collections.Sequence) and not type(data).__module__ == 'numpy':
+    elif isinstance(data, collections.abc.Sequence) and not type(data).__module__ == 'numpy':
         return sum([get_dataset_lens(sample, require_numpy) for sample in data], [])
     else:
         raise ValueError("Leafs of the nested structure need to be numpy arrays")
@@ -117,7 +117,7 @@ def get_dataset_item(data, idx):
         return data[idx]
     elif isinstance(data, collections.abc.Mapping):
         return {key: get_dataset_item(data[key], idx) for key in data}
-    elif isinstance(data, collections.Sequence):
+    elif isinstance(data, collections.abc.Sequence):
         return [get_dataset_item(sample, idx) for sample in data]
     else:
         raise ValueError("Leafs of the nested structure need to be numpy arrays")

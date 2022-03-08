@@ -90,7 +90,7 @@ def pin_memory_batch(batch):
         return batch
     elif isinstance(batch, collections.abc.Mapping):
         return {k: pin_memory_batch(sample) for k, sample in batch.items()}
-    elif isinstance(batch, collections.Sequence):
+    elif isinstance(batch, collections.abc.Sequence):
         return [pin_memory_batch(sample) for sample in batch]
     else:
         return batch
