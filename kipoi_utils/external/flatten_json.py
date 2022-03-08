@@ -26,7 +26,8 @@ SOFTWARE.
 import sys
 import json
 import collections
-from collections import Iterable, OrderedDict
+from collections.abc import Iterable
+from collections import OrderedDict
 
 import six
 
