@@ -8,7 +8,6 @@ import hashlib
 import errno
 # import psutil
 from tqdm import tqdm
-import imp
 import six
 import pickle
 import glob
@@ -133,20 +132,12 @@ def load_obj(obj_import):
         # manually run the import (don't rely on importlib.import_module)
         # the latter was caching modules which caused trouble when
         # loading multiple modules of the same kind
-        fp, pathname, description = imp.find_module(module_name)
         e = None
         try:
-            module = imp.load_module(module_name, fp, pathname, description)
+            module = importlib.import_module(module_name)
             obj = rgetattr(module, obj_name)  # recursively get the module
         except Exception as e:
-            if fp:
-                fp.close()
             raise ImportError("object {} couldn't be imported. Error {}".format(obj_import, str(e)))
-        finally:
-            # Since we may exit via an exception, close fp explicitly.
-            if fp:
-                fp.close()
-        # module = importlib.import_module(module_name)
     return obj
 
 
@@ -162,12 +153,7 @@ def load_module(path, module_name=None):
         module_name = os.path.basename(path)[:-3]  # omit .py
 
     logger.debug("loading module: {0} as {1}".format(path, module_name))
-    if sys.version_info[0] == 2:
-        import imp
-        # add the directory to system's path - allows loading submodules
-        with add_sys_path(os.path.join(os.path.dirname(module_name))):
-            module = imp.load_source(module_name, path)
-    elif sys.version_info[0] == 3:
+    if sys.version_info[0] == 3:
         """
         import importlib.machinery
         loader = importlib.machinery.SourceFileLoader
