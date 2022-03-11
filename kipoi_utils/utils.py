@@ -133,19 +133,18 @@ def load_obj(obj_import):
         # manually run the import (don't rely on importlib.import_module)
         # the latter was caching modules which caused trouble when
         # loading multiple modules of the same kind
-        spec = importlib.util.spec_from_file_location(module_name, f"{os.getcwd()}/{module_name}.py")
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        module = None
         try:
-            # module = importlib.util.module_from_spec(module_spec)
+            module = importlib.import_module(module_name)
             obj = rgetattr(module, obj_name)  # recursively get the module
         except Exception as e:
-            raise ImportError("object {} couldn't be imported. Error {}".format(obj_import, str(e)))
-        # finally:
-        #     # Since we may exit via an exception, close fp explicitly.
-        #     if fp:
-        #         fp.close()
-        # module = importlib.import_module(module_name)
+            try:
+                spec = importlib.util.spec_from_file_location(module_name, f"{os.getcwd()}/{module_name}.py")
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                obj = rgetattr(module, obj_name)  # recursively get the module
+            except Exception as e:
+                raise ImportError("object {} couldn't be imported. Error {}".format(obj_import, str(e)))
     return obj
 
 
