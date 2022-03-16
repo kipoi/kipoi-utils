@@ -1,8 +1,6 @@
 from collections import OrderedDict
 from related.functions import to_model
 from related.types import TypedSequence
-from six import string_types
-
 
 def to_sequence_field_w_str(cls):
     """

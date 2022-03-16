@@ -9,7 +9,6 @@ requirements = [
     "tqdm",
     "attrs",
     "related",
-    "six",
     "tqdm",
     "numpy",
     "PyYAML>=5.1.0",

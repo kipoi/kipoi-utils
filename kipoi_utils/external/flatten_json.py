@@ -29,9 +29,6 @@ import collections
 from collections.abc import Iterable
 from collections import OrderedDict
 
-import six
-
-
 def check_if_numbers_are_consecutive(list_):
     """
     Returns True if numbers in the list are consecutive
@@ -70,13 +67,13 @@ def flatten(dd, separator='_', prefix='', is_list_fn=lambda x: isinstance(x, lis
     """
     if isinstance(dd, collections.abc.Mapping):
         return {prefix + separator + k if prefix else k: v
-                for kk, vv in six.iteritems(dd)
-                for k, v in six.iteritems(flatten(vv, separator, kk, is_list_fn))
+                for kk, vv in dd.items()
+                for k, v in flatten(vv, separator, kk, is_list_fn).items()
                 }
     elif is_list_fn(dd):
         return {prefix + separator + k if prefix else k: v
                 for kk, vv in enumerate(dd)
-                for k, v in six.iteritems(flatten(vv, separator, str(kk), is_list_fn))
+                for k, v in flatten(vv, separator, str(kk), is_list_fn).items()
                 }
     else:
         return {prefix: dd}
@@ -95,15 +92,15 @@ def flatten_ordered(dd, separator='_', prefix='', is_list_fn=lambda x: isinstanc
         if not dd:
             return dd
         return OrderedDict([(prefix + separator + k if prefix else k, v)
-                            for kk, vv in six.iteritems(dd)
-                            for k, v in six.iteritems(flatten_ordered(vv, separator, kk, is_list_fn))
+                            for kk, vv in dd.items()
+                            for k, v in flatten_ordered(vv, separator, kk, is_list_fn).items()
                             ])
     elif is_list_fn(dd):
         if not dd:
             return dd
         return OrderedDict([(prefix + separator + k if prefix else k, v)
                             for kk, vv in enumerate(dd)
-                            for k, v in six.iteritems(flatten_ordered(vv, separator, str(kk), is_list_fn))
+                            for k, v in flatten_ordered(vv, separator, str(kk), is_list_fn).items()
                             ])
     else:
         return OrderedDict([(prefix, dd)])
@@ -122,7 +119,7 @@ def flatten_ordered(dd, separator='_', prefix='', is_list_fn=lambda x: isinstanc
 #     :return: flattened dictionary
 #     """
 #     assert isinstance(nested_dict, dict), "flatten requires a dictionary input"
-#     assert isinstance(separator, six.string_types), "separator must be string"
+#     assert isinstance(separator, str), "separator must be string"
 
 #     # This global dictionary stores the flattened keys and values and is
 #     # ultimately returned
@@ -163,9 +160,9 @@ flatten_json = flatten
 
 def _unflatten_asserts(flat_dict, separator):
     assert isinstance(flat_dict, dict), "un_flatten requires dictionary input"
-    assert isinstance(separator, six.string_types), "separator must be string"
+    assert isinstance(separator, str), "separator must be string"
     # assert all((not value or not isinstance(value, Iterable) or
-    #             isinstance(value, six.string_types)
+    #             isinstance(value, str)
     #             for value in flat_dict.values())), "provided dict is not flat"
 
 

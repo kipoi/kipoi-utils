@@ -6,7 +6,6 @@ import hashlib
 import errno
 # import psutil
 from tqdm import tqdm
-import six
 import pickle
 import glob
 import os
@@ -338,7 +337,7 @@ def yaml_ordered_dump(data, stream=None, Dumper=yaml.Dumper, **kwds):
         pass
 
     def dict_representer(dumper, data):
-        return dumper.represent_dict(six.iteritems(data))
+        return dumper.represent_dict(data.items())
     OrderedDumper.add_representer(OrderedDict, dict_representer)
     return yaml.dump(data, stream, OrderedDumper, **kwds)
 
@@ -602,7 +601,7 @@ def take_first_nested(dd):
     Example: take_first_nested({"a": [1,2,3], "b": 4}) == 1
     """
     if isinstance(dd, collections.abc.Mapping):
-        return take_first_nested(six.next(six.itervalues(dd)))
+        return take_first_nested(dd.values()[0])
     elif isinstance(dd, collections.abc.Sequence):
         return take_first_nested(dd[0])
     else:
@@ -674,7 +673,7 @@ def recursive_dict_parse(d, key, fn):
         if key in d:
             return fn(d)
         else:
-            return OrderedDict([(k, recursive_dict_parse(v, key, fn)) for k, v in six.iteritems(d)])
+            return OrderedDict([(k, recursive_dict_parse(v, key, fn)) for k, v in d.items()])
     elif isinstance(d, list):
         return [recursive_dict_parse(v, key, fn) for v in d]
     else:

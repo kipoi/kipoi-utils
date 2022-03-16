@@ -50,7 +50,7 @@ def makedir_exist_ok(dirpath):
 
 def download_url(url, root, filename, md5=''):
     # downloads file
-    from six.moves import urllib
+    import urllib
 
     root = os.path.expanduser(root)
     fpath = os.path.join(root, filename)
