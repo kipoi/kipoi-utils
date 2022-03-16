@@ -601,7 +601,7 @@ def take_first_nested(dd):
     Example: take_first_nested({"a": [1,2,3], "b": 4}) == 1
     """
     if isinstance(dd, collections.abc.Mapping):
-        return take_first_nested(dd.values()[0])
+        return take_first_nested(list(dd.values())[0])
     elif isinstance(dd, collections.abc.Sequence):
         return take_first_nested(dd[0])
     else:
