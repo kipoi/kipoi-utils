@@ -81,7 +81,7 @@ def to_eval_str(value):
     :param value: None or a value that can be converted to a str.
     :return: None or str(value)
     """
-    if isinstance(value, string_types):
+    if isinstance(value, str):
         value = eval(str(value))
 
     return value
