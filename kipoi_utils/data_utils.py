@@ -5,7 +5,6 @@ import sys
 import collections
 from kipoi_utils.utils import map_nested
 import pandas as pd
-import six
 from kipoi_utils.external.flatten_json import flatten
 
 # string_classes
@@ -158,7 +157,7 @@ def flatten_batch(batch, nested_sep="/"):
                 return collections.OrderedDict([(str(i), array2array_dict(arr[:, i]))
                                                 for i in range(arr.shape[1])])
         elif isinstance(arr, pd.DataFrame):
-            return {k: v.values for k, v in six.iteritems(arr.to_dict("records"))}
+            return {k: v.values for k, v in arr.to_dict("records").items()}
         elif (arr.__class__.__module__, arr.__class__.__name__) == ('kipoi.metadata', 'GenomicRanges'):
             return arr.to_dict()
         else:
