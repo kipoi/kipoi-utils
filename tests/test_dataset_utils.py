@@ -16,4 +16,7 @@ def test_download_url_retry(tmp_path, capfd):
     out, err = capfd.readouterr()
     for second in ['0.1', '0.2', '0.4', '0.8', '1.6', '3.2']:
         assert "Waiting " + second + " seconds before retrying" in out
-    assert 'Can not download http://invalid.url' in str(exc_info.value) 
+    output = str(exc_info.value)
+    assert 'Can not download http://invalid.url' in output
+    error_msgs = ['Name or service not known', 'nodename nor servname provided, or not known']
+    assert any(msg in output for msg in error_msgs)

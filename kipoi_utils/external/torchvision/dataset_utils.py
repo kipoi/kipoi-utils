@@ -63,6 +63,7 @@ def download_url(url, root, filename, md5=''):
         # https://developers.google.com/maps/documentation/elevation/web-service-best-practices#exponential-backoff
         current_delay = 0.1  # Set the initial retry delay to 100ms.
         max_delay = 5  # Set the maximum retry delay to 5 seconds.
+        error = ''
         while True:
             try:
                 print('Downloading ' + url + ' to ' + fpath)
@@ -70,11 +71,16 @@ def download_url(url, root, filename, md5=''):
                 url, fpath,
                 reporthook=gen_bar_updater(tqdm(unit='B', unit_scale=True)))
                 break
-            except urllib.error.URLError:
+            except urllib.error.URLError as msg:
+                error = msg
                 pass
            
             if current_delay > max_delay:
-                raise Exception("Can not download " + url)
+                if error:
+                    output = "Can not download " + url + " - " + str(error.reason)
+                else:
+                    output = "Can not download " + url
+                raise Exception(output)
             
             print("Waiting", current_delay, "seconds before retrying.")
 
