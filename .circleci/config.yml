@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 variables:
   update_conda: &update_conda
@@ -9,7 +9,7 @@ variables:
   create_conda_env: &create_conda_env
     run:
       name: create conda env
-      command: conda create -n kipoi-dev python=3.10
+      command: conda create -n kipoi-dev python=<< parameters.python-version >>
 
   install_kipoi_utils: &install_kipoi_utils
     run:
@@ -69,7 +69,10 @@ variables:
 
 jobs:
 
-  test-py310:
+  test:
+    parameters:
+      python-version:
+        type: string
     docker:
       - image: continuumio/miniconda3:latest
     working_directory: ~/repo
@@ -84,6 +87,10 @@ jobs:
       - *store_test_artifacts
 
   test-deploy-pypi:
+    parameters:
+      python-version:
+        type: string
+        default: "3.9"
     docker:
       - image: continuumio/miniconda3:latest
     working_directory: ~/repo
@@ -110,6 +117,10 @@ jobs:
             python -c "import kipoi_utils; print(kipoi_utils.__version__)"
     
   productive-deploy-pypi:
+    parameters:
+      python-version:
+        type: string
+        default: "3.9"
     docker:
       - image: continuumio/miniconda3:latest
     working_directory: ~/repo
@@ -138,26 +149,28 @@ jobs:
             python -c "import kipoi_utils; print(kipoi_utils.__version__)"          
 
 workflows:
-  version: 2
+  version: 2.1
 
   test:
     jobs:
-      - test-py310
-  test-n-deploy:
-    jobs:
-      - test-py310
+      - test:
+          matrix:
+            parameters:
+              python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
       - test-deploy-pypi:
           requires:
-            - test-py310
+            - test
           filters:
             branches:
               only:
                 - add-pypi-deployment
+                - add-more-python-versions
       - productive-deploy-pypi:
           requires:
-            - test-py310
+            - test
           filters:
             branches:
               only:
                 - master
+                - add-more-python-versions
 
